@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Presupuesto - {{ proyecto }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1, h2 { color: #2E86C1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; }
+        th { background-color: #f2f2f2; }
+        tfoot td { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Presupuesto para {{ cliente }}</h1>
+    <h2>{{ proyecto }}</h2>
+    <p><strong>Fecha:</strong> {{ fecha }}</p>
+    <p><strong>Validez del presupuesto:</strong> {{ validez }}</p>
+
+    <p>{{ descripcion_proyecto }}</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario (€)</th>
+                <th>Subtotal (€)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set total = 0 %}
+            {% for item in items %}
+                {% set subtotal = item.cantidad * item.precio_unitario %}
+                {% set total = total + subtotal %}
+                <tr>
+                    <td>{{ item.descripcion }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>{{ "%.2f"|format(item.precio_unitario) }}</td>
+                    <td>{{ "%.2f"|format(subtotal) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Subtotal</td>
+                <td>{{ "%.2f"|format(total) }}</td>
+            </tr>
+            <tr>
+                <td colspan="3">IVA ({{ impuestos_pct * 100 }}%)</td>
+                <td>{{ "%.2f"|format(total * impuestos_pct) }}</td>
+            </tr>
+            <tr>
+                <td colspan="3">Total</td>
+                <td>{{ "%.2f"|format(total * (1 + impuestos_pct)) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <p>Gracias por confiar en nosotros. Estamos a su disposición para cualquier consulta.</p>
+</body>
+</html>
