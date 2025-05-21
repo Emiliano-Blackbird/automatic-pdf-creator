@@ -6,7 +6,7 @@ def generate_pdf(template_name, context, output_path):
     env = Environment(loader=FileSystemLoader('app/templates'))
     template = env.get_template(template_name)
     html_out = template.render(context)
-    HTML(string=html_out).write_pdf(output_path)
+    HTML(string=html_out, base_url="app/templates").write_pdf(output_path)
 
 
 def pedir_datos_item():
@@ -46,6 +46,16 @@ if __name__ == "__main__":
         "items": items,
         "impuestos_pct": impuestos_pct
     }
+
+    subtotal = sum(item['cantidad'] * item['precio_unitario'] for item in items)
+    impuestos = subtotal * impuestos_pct
+    total = subtotal + impuestos
+
+    data.update({
+        "subtotal": subtotal,
+        "impuestos": impuestos,
+        "total": total
+    })
 
     output_pdf = f"presupuesto_{cliente.replace(' ', '_').lower()}.pdf"
     generate_pdf("budget.html", data, output_pdf)

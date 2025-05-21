@@ -3,14 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Presupuesto - {{ proyecto }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1, h2 { color: #2E86C1; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; }
-        th { background-color: #f2f2f2; }
-        tfoot td { font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="budget.css" />
 </head>
 <body>
     <h1>Presupuesto para {{ cliente }}</h1>
@@ -29,31 +22,30 @@
                 <th>Subtotal (€)</th>
             </tr>
         </thead>
+
         <tbody>
-            {% set total = 0 %}
             {% for item in items %}
-                {% set subtotal = item.cantidad * item.precio_unitario %}
-                {% set total = total + subtotal %}
-                <tr>
-                    <td>{{ item.descripcion }}</td>
-                    <td>{{ item.cantidad }}</td>
-                    <td>{{ "%.2f"|format(item.precio_unitario) }}</td>
-                    <td>{{ "%.2f"|format(subtotal) }}</td>
-                </tr>
+            <tr>
+            <td>{{ item.descripcion }}</td>
+            <td>{{ item.cantidad }}</td>
+            <td>{{ item.precio_unitario | round(2) }} €</td>
+            <td>{{ (item.cantidad * item.precio_unitario) | round(2) }} €</td>
+            </tr>
             {% endfor %}
         </tbody>
+
         <tfoot>
             <tr>
                 <td colspan="3">Subtotal</td>
-                <td>{{ "%.2f"|format(total) }}</td>
+                <td>{{ subtotal | round(2) }} €</td>
             </tr>
             <tr>
-                <td colspan="3">IVA ({{ impuestos_pct * 100 }}%)</td>
-                <td>{{ "%.2f"|format(total * impuestos_pct) }}</td>
+                <td colspan="3">IVA ({{ (impuestos_pct * 100) | round(0) }}%)</td>
+                <td>{{ impuestos | round(2) }} €</td>
             </tr>
             <tr>
-                <td colspan="3">Total</td>
-                <td>{{ "%.2f"|format(total * (1 + impuestos_pct)) }}</td>
+                <td colspan="3"><strong>Total</strong></td>
+                <td><strong>{{ total | round(2) }} €</strong></td>
             </tr>
         </tfoot>
     </table>
